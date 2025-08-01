@@ -1,0 +1,58 @@
+<!------------------------- Navbar------------------------->
+
+<div class="min-h-screen flex flex-col bg-gray-100 font-sans">
+  <header class="text-gray-600 body-font bg-white shadow">
+    <div
+      class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center"
+    >
+      <a
+        class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0"
+      >
+        <img src="images/logo.png" alt="Logo" class="h-10 w-auto mr-3" />
+      </a>
+
+      <span
+        *ngIf="authService.isauthenticated"
+        class="md:ml-4 md:mr-auto md:py-1 md:pl-4 md:border-l md:border-gray-400"
+      >
+        Bienvenue, {{ authService.username }}
+      </span>
+
+      <nav
+        class="header-links flex space-x-4 md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400"
+      >
+        <ul class="flex">
+          <li
+            *ngIf="permissions?.canRead"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <a routerLink="/user/conventions"><span>Conventions</span></a>
+          </li>
+          <li
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <a *ngIf="permissions?.canCreate" routerLink="/user/addConvention"
+              ><span>Ajouter une convention</span></a
+            >
+          </li>  
+        </ul>
+      </nav>
+
+      <div class="hidden sm:flex sm:items-center">
+        <a
+          href="#"
+          class="py-2 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300"
+          >Sign out</a
+        >
+      </div>
+
+      <div class="sm:hidden cursor-pointer ml-4">...</div>
+    </div>
+  </header>
+
+  <main class="flex-grow container mx-auto px-4 py-6">
+    <router-outlet></router-outlet>
+  </main>
+</div>

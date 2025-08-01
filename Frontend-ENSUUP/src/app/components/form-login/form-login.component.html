@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+/>
+</head>
+<body>
+  <div class="login-wrapper">
+  <div class="login-container">
+    <div class="header">
+      <img [src]="logoPath" alt="Logo Ministère" class="logo" />
+      <p>
+        Ministère de l'Enseignement Supérieur, de la Recherche Scientifique et
+        de l'Innovation.
+      </p>
+    </div>
+
+    <div class="divider">Authentification</div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Champ nom d'utilisateur -->
+    <div class="form-group">
+  <input type="text"
+         formControlName="username"
+         id="username"
+         placeholder="Nom d'utilisateur"
+         required />
+
+  <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+       class="input-error">
+    Le nom d'utilisateur est requis.
+  </div>
+</div>
+
+
+      <!-- Champ mot de passe + icône -->
+      <div class="form-group password-container">
+        <input [type]="showPassword ? 'text' : 'password'"
+               formControlName="password"
+               id="password"
+               placeholder="Mot de passe"
+               required />
+
+        <i class="fas password-toggle"
+           [class.fa-eye]="!showPassword"
+           [class.fa-eye-slash]="showPassword"
+           (click)="togglePasswordVisibility()"></i>
+
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+             class="input-error">
+          Le mot de passe est requis.
+        </div>
+      </div>
+
+      <!-- Erreur de login -->
+      <div *ngIf="loginError" class="text-danger small" style="margin-bottom: 10px;">
+        Identifiants incorrects. Veuillez réessayer.
+      </div>
+
+      <!-- Bouton -->
+      <button type="submit" [disabled]="!loginForm.valid">
+        Se connecter
+      </button>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

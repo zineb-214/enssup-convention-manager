@@ -1,0 +1,119 @@
+<form [formGroup]="conventionForm" (ngSubmit)="submitConvention()" class="space-y-6 p-6 max-w-3xl mx-auto bg-white shadow-lg rounded-2xl border border-gray-200">
+
+  <!-- Type de convention -->
+  <div>
+    <label class="block font-medium text-gray-700 mb-2">Type de convention</label>
+    <select formControlName="typeCode" (change)="onTypeChange()"
+            class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+      <option *ngFor="let type of conventionTypes" [value]="type.code">
+        {{ type.name }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Champs de base -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div>
+      <label class="label">Titre</label>
+      <input formControlName="title" class="input" />
+    </div>
+    <div>
+      <label class="label">Numéro de convention</label>
+      <input formControlName="conventionNumber" class="input" />
+    </div>
+    <div>
+      <label class="label">Objet</label>
+   <textarea formControlName="object" class="textarea"></textarea>
+
+    </div>
+    <div>
+      <label class="label">Date de signature</label>
+      <input formControlName="signatureDate" type="date" class="input" />
+    </div>
+    <div>
+      <label class="label">Date de début</label>
+      <input formControlName="startDate" type="date" class="input" />
+    </div>
+    <div>
+      <label class="label">Date de fin</label>
+      <input formControlName="endDate" type="date" class="input" />
+    </div>
+    <div>
+      <label class="label">Partenaires</label>
+     <textarea formControlName="partners" class="textarea"></textarea>
+    </div>
+    <div>
+      <label class="label">Chemin du fichier</label>
+      <input formControlName="filePath" class="input" />
+    </div>
+  </div>
+
+  <!-- Champs spécifiques à ECHANGES -->
+  <div *ngIf="selectedTypeCode === 'ECHANGES'" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div>
+      <label class="label">Nature de l’échange</label>
+      <input formControlName="natureEchange" class="input" />
+    </div>
+    <div>
+      <label class="label">Modalité d’échange</label>
+      <input formControlName="modaliteEchange" class="input" />
+    </div>
+    <div>
+      <label class="label">Logistique</label>
+      <input formControlName="logistique" class="input" />
+    </div>
+    <div>
+      <label class="label">Assurance responsabilité</label>
+      <input formControlName="assuranceResponsabilite" class="input" />
+    </div>
+    <div>
+      <label class="label">Renouvellement</label>
+      <input formControlName="renouvellement" class="input" />
+    </div>
+    <div>
+      <label class="label">Résiliation</label>
+      <textarea formControlName="resiliation" class="textarea"></textarea>
+    </div>
+  </div>
+
+  <!-- Champs spécifiques à ACCORD -->
+  <div *ngIf="selectedTypeCode === 'ACCORD'" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div>
+      <label class="label">Périmètre</label>
+      <input formControlName="perimetre" class="input" />
+    </div>
+    <div>
+      <label class="label">Modalité</label>
+      <input formControlName="modalite" class="input" />
+    </div>
+  </div>
+
+  <!-- Champs personnalisés dynamiques -->
+  <div class="space-y-3">
+    <label class="block font-medium text-gray-700">Champs personnalisés</label>
+    <div formArrayName="customFields" class="space-y-3">
+      <div *ngFor="let field of customFields.controls; let i = index" [formGroupName]="i" class="flex gap-3 items-center">
+        <input formControlName="key" placeholder="Nom" class="input flex-1" />
+        <input formControlName="value" placeholder="Valeur" class="input flex-1" />
+        <button type="button" (click)="removeCustomField(i)" class="text-red-600 hover:text-red-800 text-xl">X</button>
+      </div>
+    </div>
+    <button type="button" (click)="addCustomField()" class="text-blue-600 hover:underline text-sm">Ajouter un champ</button>
+  </div>
+
+
+  <!-- Bouton de soumission -->
+  <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
+    Créer la convention
+  </button>
+
+  <!-- Message de succès ou d'erreur -->
+  <div *ngIf="successMessage" class="mt-4 p-4 rounded-lg text-white" [ngClass]="{
+    'bg-green-500': successMessage.startsWith('✅'),
+    'bg-red-500': successMessage.startsWith('❌')
+  }">
+    {{ successMessage }}
+  </div>
+</form>
+
+

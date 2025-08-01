@@ -1,0 +1,302 @@
+<!-- Filtres -->
+<div class="p-4 bg-gray-100 rounded-lg mb-6">
+  <form (ngSubmit)="filterConventions()" class="grid grid-cols-1 md:grid-cols-5 gap-5 items-end">
+    <div class="flex flex-col">
+      <label class="block text-gray-700 text-sm font-medium mb-1">Type</label>
+      <select [(ngModel)]="filters.code" name="code"
+        class="rounded-md bg-gray-200 text-gray-700 leading-tight focus:outline-none py-2 px-3 w-48">
+        <option value="">-- Tous --</option>
+        <option *ngFor="let type of conventionTypes" [value]="type.code">{{ type.name }}</option>
+      </select>
+    </div>
+
+    <div class="flex flex-col">
+      <label class="block text-gray-700 text-sm font-medium mb-1">Titre</label>
+      <input [(ngModel)]="filters.title" name="title" type="text" placeholder="Rechercher par titre"
+        class="rounded-md bg-gray-200 text-gray-700 leading-tight focus:outline-none py-2 px-3 w-48" />
+    </div>
+
+    <div class="flex flex-col">
+      <label class="block text-gray-700 text-sm font-medium mb-1">Début à partir de</label>
+      <input [(ngModel)]="filters.startDateFrom" name="startDateFrom" type="date" [max]="today"
+        class="rounded-md bg-gray-200 text-gray-700 leading-tight focus:outline-none py-2 px-3 w-48" />
+    </div>
+
+    <div class="flex flex-col">
+      <label class="block text-gray-700 text-sm font-medium mb-1">Jusqu'à</label>
+      <input [(ngModel)]="filters.startDateTo" name="startDateTo" type="date" [max]="today"
+        class="rounded-md bg-gray-200 text-gray-700 leading-tight focus:outline-none py-2 px-3 w-48" />
+    </div>
+
+   <div class="flex space-x-4 items-center">
+  <button type="submit"
+    class="rounded-md hover:bg-blue-700 bg-blue-600 text-white leading-tight focus:outline-none py-2 px-3 w-48">
+    Filtrer
+  </button>
+</div>
+  </form>
+</div>
+
+<!-- Cartes -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+  <div *ngFor="let conv of conventions" class="relative bg-white shadow-lg rounded-xl px-6 pt-6 pb-6 border">
+    <div class="absolute -top-8 transform -translate-x-1/2">
+      <div class="flex h-10 w-10 items-center justify-center rounded-full bg-teal-400 shadow-lg shadow-teal-500/40">
+        <svg viewBox="0 0 33 46" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white">
+          <path d="M24.75 23H8.25V28.75H24.75V23ZM32.3984 9.43359L23.9852 0.628906C23.5984 0.224609 23.0742 0 22.5242 0H22V11.5H33V10.952C33 10.3859 32.7852 9.83789 32.3984 9.43359ZM19.25 12.2188V0H2.0625C0.919531 0 0 0.961328 0 2.15625V43.8438C0 45.0387 0.919531 46 2.0625 46H30.9375C32.0805 46 33 45.0387 33 43.8438V14.375H21.3125C20.1781 14.375 19.25 13.4047 19.25 12.2188ZM5.5 6.46875C5.5 6.07164 5.80766 5.75 6.1875 5.75H13.0625C13.4423 5.75 13.75 6.07164 13.75 6.46875V7.90625C13.75 8.30336 13.4423 8.625 13.0625 8.625H6.1875C5.80766 8.625 5.5 8.30336 5.5 7.90625V6.46875ZM5.5 12.2188C5.5 11.8216 5.80766 11.5 6.1875 11.5H13.0625C13.4423 11.5 13.75 11.8216 13.75 12.2188V13.6562C13.75 14.0534 13.4423 14.375 13.0625 14.375H6.1875C5.80766 14.375 5.5 14.0534 5.5 13.6562V12.2188ZM27.5 39.5312C27.5 39.9284 27.1923 40.25 26.8125 40.25H19.9375C19.5577 40.25 19.25 39.9284 19.25 39.5312V38.0938C19.25 37.6966 19.5577 37.375 19.9375 37.375H26.8125C27.1923 37.375 27.5 37.6966 27.5 38.0938V39.5312ZM27.5 21.5625V30.1875C27.5 30.9817 26.8847 31.625 26.125 31.625H6.875C6.11531 31.625 5.5 30.9817 5.5 30.1875V21.5625C5.5 20.7683 6.11531 20.125 6.875 20.125H26.125C26.8847 20.125 27.5 20.7683 27.5 21.5625Z" fill="white" />
+        </svg>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-xl text-teal-400 mb-1">{{ conv.title }}</h3>
+      <p class="text-sm text-gray-600 mb-2">N° {{ conv.conventionNumber }} - {{ conv.object }}</p>
+      <p class="text-sm text-gray-600 mb-2">Type : {{ conv.conventionType?.name }} {{ conv?.typeCode }}</p>
+
+     <div class="flex items-center flex-wrap gap-2 mt-2">
+
+  <!-- Afficher les détails -->
+  <button (click)="openModal(conv)"
+    class="bg-teal-500 hover:bg-teal-400 text-white p-2 rounded-full shadow transition duration-200"
+    title="Afficher les détails">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24"
+      stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z" />
+    </svg>
+  </button>
+
+  <!-- Modifier -->
+  <button *ngIf="userPermissions?.canUpdate"
+    (click)="openEditForm(conv.id)"
+    class="bg-yellow-400 hover:bg-yellow-300 text-white p-2 rounded-full shadow transition duration-200"
+    title="Modifier">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" viewBox="0 0 20 20" fill="currentColor">
+      <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+      <path fill-rule="evenodd" d="M2 15.25V18h2.75l8.086-8.086-2.75-2.75L2 15.25z" clip-rule="evenodd" />
+    </svg>
+  </button>
+
+  <!-- Supprimer -->
+  <button *ngIf="userPermissions?.canDelete"
+    (click)="confirmDelete(conv.id)"
+    class="bg-red-500 hover:bg-red-400 text-white p-2 rounded-full shadow transition duration-200"
+    title="Supprimer">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24"
+      stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+
+  <!-- Générer PDF -->
+  <button (click)="openDocumentModal(conv)"
+    class="bg-teal-500 hover:bg-teal-400 text-white px-3 py-2 rounded-full shadow text-sm transition duration-200">
+    Générer et enregistrer le PDF
+  </button>
+</div>
+
+<div *ngIf="editFormVisible" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-2xl p-6 w-full max-w-4xl relative max-h-[90vh] overflow-y-auto shadow-lg">
+    
+    <h2 class="text-2xl font-bold text-teal-600 text-center mb-6 border-b pb-2"> Modifier la Convention</h2>
+
+    <form [formGroup]="conventionForm" (ngSubmit)="submitEdit()" class="space-y-6">
+
+      <!-- Type -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Type de convention</label>
+        <select formControlName="typeId" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+          <option [ngValue]="null">-- Sélectionner un type --</option>
+          <option *ngFor="let type of conventionTypes" [ngValue]="type.id">{{ type.name }}</option>
+        </select>
+      </div>
+
+      <!-- Bloc titre + numéro -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <label class="block">
+          <span class="text-sm font-semibold">Titre</span>
+          <input type="text" formControlName="title" class="w-full border rounded p-2" />
+        </label>
+        <label class="block">
+          <span class="text-sm font-semibold">Numéro de convention</span>
+          <input type="text" formControlName="conventionNumber" class="w-full border rounded p-2" />
+        </label>
+      </div>
+
+      <!-- Objet -->
+      <div>
+        <label class="block text-sm font-semibold">Objet</label>
+        <input type="text" formControlName="object" class="w-full border rounded p-2" />
+      </div>
+
+      <!-- Dates -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <label class="block">
+          <span class="text-sm font-semibold">Date de signature</span>
+          <input type="date" formControlName="signatureDate" class="w-full border rounded p-2" />
+        </label>
+        <label class="block">
+          <span class="text-sm font-semibold">Date de début</span>
+          <input type="date" formControlName="startDate" class="w-full border rounded p-2" />
+        </label>
+        <label class="block">
+          <span class="text-sm font-semibold">Date de fin</span>
+          <input type="date" formControlName="endDate" class="w-full border rounded p-2" />
+        </label>
+      </div>
+
+      <!-- Partenaire / chemin -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <label class="block">
+          <span class="text-sm font-semibold">Partenaires</span>
+          <input type="text" formControlName="partners" class="w-full border rounded p-2" />
+        </label>
+        <label class="block">
+          <span class="text-sm font-semibold">Chemin fichier</span>
+          <input type="text" formControlName="filePath" class="w-full border rounded p-2" />
+        </label>
+      </div>
+
+      <!-- Champs spécifiques -->
+      <div *ngIf="typeIdSelected === 1">
+        <h3 class="font-semibold text-teal-600 mb-2">Informations Échange</h3>
+        <div class="space-y-4">
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Nature Échange</label>
+    <input formControlName="natureEchange" placeholder="Nature Échange" class="w-full border p-2 rounded" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Modalité Échange</label>
+    <input formControlName="modaliteEchange" placeholder="Modalité Échange" class="w-full border p-2 rounded" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Logistique</label>
+    <input formControlName="logistique" placeholder="Logistique" class="w-full border p-2 rounded" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Assurance Responsabilité</label>
+    <input formControlName="assuranceResponsabilite" placeholder="Assurance Responsabilité" class="w-full border p-2 rounded" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Renouvellement</label>
+    <input formControlName="renouvellement" placeholder="Renouvellement" class="w-full border p-2 rounded" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Résiliation</label>
+    <input formControlName="resiliation" placeholder="Résiliation" class="w-full border p-2 rounded" />
+  </div>
+</div>
+
+      </div>
+
+      <div *ngIf="typeIdSelected === 2">
+        <h3 class="font-semibold text-teal-600 mb-2">Informations Accord</h3>
+        <div class="space-y-2">
+          <input formControlName="perimetre" placeholder="Périmètre" class="w-full border p-2 rounded" />
+          <input formControlName="modalite" placeholder="Modalité" class="w-full border p-2 rounded" />
+        </div>
+      </div>
+
+      <!-- Champs personnalisés -->
+      <div>
+        <h3 class="font-semibold text-gray-800 mb-2">Champs personnalisés</h3>
+        <div formArrayName="customFields" class="space-y-2">
+          <div *ngFor="let cf of customFields.controls; let i = index" [formGroupName]="i" class="flex gap-2 items-center">
+            <input formControlName="key" placeholder="Nom du champ" class="border p-2 rounded w-1/3" />
+            <input formControlName="value" placeholder="Valeur" class="border p-2 rounded flex-grow" />
+            <button type="button" (click)="removeCustomField(i)" class="text-red-500 text-xl font-bold">×</button>
+          </div>
+        </div>
+        <button type="button" (click)="addCustomField()" class="mt-2 text-sm text-blue-600 font-semibold hover:underline">+ Ajouter un champ personnalisé</button>
+      </div>
+
+      <!-- Boutons -->
+      <div class="flex justify-end gap-4 pt-4 border-t mt-4 sticky bottom-0 bg-white pb-4">
+        <button type="button" (click)="cancelEdit()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded shadow">Annuler</button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded shadow">Enregistrer</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!--Popup pour Detail -->
+<div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white rounded-xl shadow-lg max-w-2xl w-full p-6 relative">
+    <button (click)="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-red-800 text-xl">
+      ✕
+    </button>
+
+    <h2 class="text-2xl text-center text-teal-600 font-semibold mb-4">
+      Détails de la convention : {{ selectedConvention?.title }}
+    </h2>
+
+    <div class="text-sm text-gray-700 space-y-2">
+      <p><strong>Date de signature :</strong> {{ selectedConvention?.signatureDate }}</p>
+      <p><strong>Début :</strong> {{ selectedConvention?.startDate }}</p>
+      <p><strong>Fin :</strong> {{ selectedConvention?.endDate }}</p>
+      <p><strong>Partenaires :</strong> {{ selectedConvention?.partners }}</p>
+      <p><strong>Fichier :</strong> {{ selectedConvention?.filePath }}</p>
+      <p><strong>Créée le :</strong> {{ selectedConvention?.createdAt }}</p>
+      <p><strong>Créée par :</strong> {{ selectedConvention?.createdBy?.username }}</p>
+
+      <div *ngIf="selectedConvention?.typeCode === 'ECHANGES'" class="pl-4 border-l-2 border-blue-300">
+        <p><strong>Nature échange :</strong> {{ selectedConvention?.natureEchange }}</p>
+        <p><strong>Modalité échange :</strong> {{ selectedConvention?.modaliteEchange }}</p>
+        <p><strong>Logistique :</strong> {{ selectedConvention?.logistique }}</p>
+        <p><strong>Assurance :</strong> {{ selectedConvention?.assuranceResponsabilite }}</p>
+        <p><strong>Renouvellement :</strong> {{ selectedConvention?.renouvellement }}</p>
+        <p><strong>Résiliation :</strong> {{ selectedConvention?.resiliation }}</p>
+      </div>
+
+      <div *ngIf="selectedConvention?.typeCode === 'ACCORD'" class="pl-4 border-l-2 border-green-300">
+        <p><strong>Périmètre :</strong> {{ selectedConvention?.perimetre }}</p>
+        <p><strong>Modalité :</strong> {{ selectedConvention?.modalite }}</p>
+      </div>
+
+      <div *ngIf="selectedConvention?.customFields && getObjectKeys(selectedConvention?.customFields).length > 0">
+        <p class="font-semibold mt-2">Champs personnalisés :</p>
+        <ul class="list-disc list-inside ml-2">
+          <li *ngFor="let key of getObjectKeys(selectedConvention?.customFields)">
+            {{ key }} : {{ selectedConvention?.customFields[key] }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+    
+
+<!-- Modal -->
+<div *ngIf=" showModalforDoc" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg p-6 w-full max-w-md">
+    <h2 class="text-xl font-semibold mb-4">Nom du document PDF</h2>
+    
+    <input [(ngModel)]="documentName" type="text"
+           class="w-full border rounded p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+           placeholder="ex: convention_2025.pdf" />
+
+    <div class="flex justify-end space-x-2">
+      <button (click)=" showModalforDoc = false"
+              class="bg-gray-400 text-white px-4 py-1 rounded hover:bg-gray-500">
+        Annuler
+      </button>
+      <button (click)="submitDocument()"
+              class="bg-indigo-600 text-white px-4 py-1 rounded hover:bg-indigo-700">
+        Générer
+      </button>
+    </div>
+  </div>
+</div>

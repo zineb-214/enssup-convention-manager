@@ -1,0 +1,44 @@
+/* Styles des liens avec effet souligné animé */
+.header-links li {
+  position: relative;
+  list-style: none;
+  padding: 0 1.5rem;
+  cursor: pointer;
+}
+
+.header-links li span {
+  position: relative;
+  z-index: 0;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #4B5563; /* text-gray-600 */
+}
+
+.header-links li span::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 2px;
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.header-links li.active span::before {
+  background-color: #fcae04; /* couleur soulignée active */
+}
+
+.header-links li:not(.active):hover span::before {
+  background-color: #d1d5db; /* gris clair au hover */
+}
+
+.header-links li.active span {
+  color: #b45309; /* couleur texte active */
+}
+
+.header-links li:not(.active):hover span {
+  color: #374151; /* texte plus foncé au hover */
+}

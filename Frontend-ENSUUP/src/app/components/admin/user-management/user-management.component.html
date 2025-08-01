@@ -1,0 +1,377 @@
+<div class="p-6 rounded-lg shadow-sm mb-6">
+  <!-- Titre -->
+  <div class="mb-4">
+    <h2 class="text-2xl font-bold text-gray-800">Liste des utilisateurs</h2>
+  </div>
+
+  <!-- Filtrage + Boutons dans une seule ligne -->
+  <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-6">
+
+    <!-- Formulaire de filtrage -->
+    <form (ngSubmit)="onFilter()" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 w-full">
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-1">Nom d'utilisateur</label>
+        <input
+          type="text"
+          [(ngModel)]="usernameFilter"
+          name="username"
+          placeholder="Nom d'utilisateur"
+          class="rounded-md bg-gray-200 text-gray-700 py-2 px-3 w-full focus:outline-none"
+        />
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-1">Statut</label>
+        <select
+          [(ngModel)]="isDeletedFilter"
+          name="isDeleted"
+          class="rounded-md bg-gray-200 text-gray-700 py-2 px-3 w-full focus:outline-none"
+        >
+          <option value="">Tous</option>
+          <option value="false">Actifs</option>
+          <option value="true">Désactivé</option>
+        </select>
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-1">Début à partir de</label>
+        <input
+          type="date"
+          [(ngModel)]="startDateFilter"
+          name="startDate"
+          [max]="today"
+          class="rounded-md bg-gray-200 text-gray-700 py-2 px-3 w-full focus:outline-none"
+        />
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-1">Jusqu'à</label>
+        <input
+          type="date"
+          [(ngModel)]="endDateFilter"
+          name="endDate"
+          [max]="today"
+          class="rounded-md bg-gray-200 text-gray-700 py-2 px-3 w-full focus:outline-none"
+        />
+      </div>
+
+      <!-- Groupe de boutons Rechercher + Ajouter -->
+      <div class="flex flex-row gap-2 items-end pt-1">
+        <button
+          type="submit"
+          class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition-colors duration-200"
+        >
+          Rechercher
+        </button>
+        <button 
+          type="button"
+          (click)="showAddForm = !showAddForm"
+          class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition-colors duration-200"
+        >
+          Ajouter
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+  <!-- Formulaire d'ajout (conditionnel) -->
+  <div *ngIf="showAddForm" class="mb-8 p-6 bg-gray-50 rounded-lg shadow-md border border-gray-200">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Ajouter un nouvel utilisateur</h2>
+    <form (ngSubmit)="addUser()" class="space-y-4">
+      <!-- Champs utilisateur -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nom d'utilisateur</label>
+          <input
+            type="text"
+            [(ngModel)]="newUser.username"
+            name="username"
+            placeholder="Nom d'utilisateur"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+          <input
+            type="password"
+            [(ngModel)]="newUser.password"
+            name="password"
+            placeholder="Mot de passe"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input
+          type="email"
+          [(ngModel)]="newUser.email"
+          name="email"
+          placeholder="Email"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        />
+      </div>
+      <!-- Permissions -->
+      <div class="pt-2">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Permissions</label>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <label class="inline-flex items-center">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="permissionRequest.canCreate" 
+              name="canCreate" 
+              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <span class="ml-2 text-sm text-gray-700">Créer</span>
+          </label>
+          <label class="inline-flex items-center">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="permissionRequest.canRead" 
+              name="canRead" 
+             
+              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <span class="ml-2 text-sm text-gray-700">Lire</span>
+          </label>
+          
+          <label class="inline-flex items-center">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="permissionRequest.canUpdate" 
+              name="canUpdate" 
+                  (change)="onCanReadChange($event)"
+              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <span class="ml-2 text-sm text-gray-700">Modifier</span>
+          </label>
+          
+          <label class="inline-flex items-center">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="permissionRequest.canDelete" 
+              name="canDelete" 
+                 (change)="onCanReadChange($event)"
+              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <span class="ml-2 text-sm text-gray-700">Supprimer</span>
+          </label>
+        </div>
+      </div>
+      <div class="pt-4">
+        <button 
+          type="submit" 
+          class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >  Ajouter l'utilisateur
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tableau des utilisateurs -->
+  <div class="overflow-x-auto rounded-lg border border-gray-200 shadow">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+        
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom d'utilisateur</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rôles</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Permissions</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Active</th>
+    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date de création</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let user of users" class="hover:bg-gray-50 transition-colors duration-150" >
+
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ user.username }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ user.email }}</td>
+          <!-- Rôles -->
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+            <span *ngFor="let role of user.roles ?? []; let i = index">
+              <span class="bg-blue-100 text-blue-800 text-xs font-semibold mr-1 px-2.5 py-0.5 rounded">
+                {{ role.name }}
+              </span>
+            </span>
+          </td>
+
+         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+            <div *ngFor="let perm of user.permissions ?? []" class="flex flex-wrap gap-2">
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                    [ngClass]="perm.canCreate ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                <span class="font-bold mr-1">C</span>{{ perm.canCreate ? '✔' : '✘' }}
+              </span>
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                    [ngClass]="perm.canRead ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                <span class="font-bold mr-1">R</span>{{ perm.canRead ? '✔' : '✘' }}
+              </span>
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                    [ngClass]="perm.canUpdate ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                <span class="font-bold mr-1">U</span>{{ perm.canUpdate ? '✔' : '✘' }}
+              </span>
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                    [ngClass]="perm.canDelete ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                <span class="font-bold mr-1">D</span>{{ perm.canDelete ? '✔' : '✘' }}
+              </span>
+            </div>
+          </td>
+
+ <td class="px-6 py-4 whitespace-nowrap">
+  <label class="relative inline-flex items-center cursor-pointer">
+    <input
+      type="checkbox"
+      class="sr-only peer"
+      [checked]="!user.deleted"
+      (change)="toggleUserStatus(user)"
+    />
+    <div
+  class="relative w-11 h-6 rounded-full transition-colors duration-300"
+  [ngClass]="{
+    'bg-green-500': !user.deleted,
+    'bg-red-500': user.deleted
+  }"
+>
+  <div
+    class="absolute top-0.5 left-[2px] h-5 w-5 rounded-full bg-white shadow transition-transform duration-300"
+    [ngStyle]="{
+      transform: user.deleted ? 'translateX(0)' : 'translateX(100%)'
+    }"
+  ></div>
+</div>
+  </label>
+</td>
+
+
+          <!-- Actions -->
+          <td class="px-6 py-4 whitespace-nowrap text-sm">
+            <button class="text-indigo-600 hover:text-indigo-900 mr-2" (click)="selectUser(user)">Modifier</button>
+          </td>
+
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ user.createdAt }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+       <div class="flex  gap-4 mt-2">
+  <button 
+    (click)="prevPage()" 
+    [disabled]="page === 0"
+    class="px-4 py-2 rounded-md font-medium transition-colors duration-200
+           text-white bg-blue-600 hover:bg-blue-700
+           disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+  >
+    Précédent
+  </button>
+
+  <button 
+    (click)="nextPage()" 
+    [disabled]="page + 1 >= totalPages"
+    class="px-4 py-2 rounded-md font-medium transition-colors duration-200
+           text-white bg-blue-600 hover:bg-blue-700
+           disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+  >
+    Suivant
+  </button>
+</div>
+
+      </tfoot>
+    </table>
+     
+  </div>
+
+  <!-- edit user -->
+
+<!-- Formulaire de modification utilisateur -->
+<div *ngIf="selectedUser" class="mt-6 p-6 border rounded bg-gray-50 shadow-sm">
+  <h2 class="text-xl font-semibold mb-4 text-gray-700">Modifier l'utilisateur</h2>
+
+  <form (ngSubmit)="updateUser()" class="space-y-6">
+
+    <!-- Informations de base -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Username -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nom d'utilisateur</label>
+        <input
+          type="text"
+          [(ngModel)]="selectedUser.username"
+          name="username"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          required
+        />
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input
+          type="email"
+          [(ngModel)]="selectedUser.email"
+          name="email"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          required
+        />
+      </div>
+
+      <!-- Mot de passe -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+        <input
+          type="password"
+          [(ngModel)]="selectedUser.password"
+          name="password"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+        />
+      </div>
+      <div class="mt-4">
+  
+</div>
+    </div>
+
+    <!-- Permissions -->
+    <div class="mt-4">
+      <h3 class="text-md font-semibold text-gray-700 mb-2">Permissions</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-4 rounded shadow-sm">
+          <label class="inline-flex items-center gap-2 text-sm">
+          <input type="checkbox" [(ngModel)]="selectedPermission.canCreate" name="canCreate" />
+          Création
+        </label>
+        <label class="inline-flex items-center gap-2 text-sm">
+          <input type="checkbox" [(ngModel)]="selectedPermission.canRead" name="canRead" />
+          Lecture
+        </label>
+        <label class="inline-flex items-center gap-2 text-sm">
+          <input type="checkbox" [(ngModel)]="selectedPermission.canUpdate"   (change)="onCanReadEditChange($event)" name="canUpdate" />
+          Modification
+        </label>
+        <label class="inline-flex items-center gap-2 text-sm">
+          <input type="checkbox" [(ngModel)]="selectedPermission.canDelete"  (change)="onCanReadEditChange($event)" name="canDelete" />
+          Suppression
+        </label>
+      </div>
+    </div>
+
+    <!-- Boutons -->
+    <div class="mt-6 flex justify-end gap-4">
+      <button
+        type="submit"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+      >
+        Enregistrer
+      </button>
+      <button
+        type="button"
+        (click)="selectedUser = undefined"
+        class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition"
+      >
+        Annuler
+      </button>
+    </div>
+  </form>
+</div>
