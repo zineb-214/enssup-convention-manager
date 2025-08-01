@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Détails de la Convention</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      margin: 20px;
+      line-height: 1.6;
+      color: #333;
+    }
+    h1 {
+      color: #14b8a6; /* teal-500 */
+      margin-bottom: 20px;
+    }
+    h3 {
+      margin-top: 30px;
+      margin-bottom: 10px;
+      color: #facc15; /* yellow-400 */
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    .label {
+      font-weight: bold;
+      display: inline-block;
+      width: 180px;
+    }
+    p {
+      margin: 4px 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Titre principal -->
+<h1 th:text="${convention.title}">Convention</h1>
+
+<!-- Informations générales -->
+<div class="section">
+  <p><span class="label">Numéro :</span> <span th:text="${convention.conventionNumber}">N/A</span></p>
+  <p><span class="label">Objet :</span> <span th:text="${convention.object}">N/A</span></p>
+  <p><span class="label">Type :</span> <span th:text="${convention.typeCode}">N/A</span></p>
+  <p><span class="label">Partenaires :</span> <span th:text="${convention.partners}">N/A</span></p>
+  <p><span class="label">Date de signature :</span> <span th:text="${convention.signatureDate}">N/A</span></p>
+  <p><span class="label">Date de début :</span> <span th:text="${convention.startDate}">N/A</span></p>
+  <p><span class="label">Date de fin :</span> <span th:text="${convention.endDate}">N/A</span></p>
+  <p><span class="label">Créée par :</span> <span th:text="${convention.createdBy?.username}">N/A</span></p>
+  <p><span class="label">Créée le :</span> <span th:text="${convention.createdAt}">N/A</span></p>
+</div>
+
+<!-- Informations spécifiques au type ECHANGES -->
+<div class="section" th:if="${convention.typeCode == 'ECHANGES'}">
+  <h3>Informations - ÉCHANGES</h3>
+  <p><span class="label">Nature de l'échange :</span> <span th:text="${convention.natureEchange}">-</span></p>
+  <p><span class="label">Modalités de l'échange :</span> <span th:text="${convention.modaliteEchange}">-</span></p>
+  <p><span class="label">Logistique :</span> <span th:text="${convention.logistique}">-</span></p>
+  <p><span class="label">Assurance responsabilité :</span> <span th:text="${convention.assuranceResponsabilite}">-</span></p>
+  <p><span class="label">Renouvellement :</span> <span th:text="${convention.renouvellement}">-</span></p>
+  <p><span class="label">Résiliation :</span> <span th:text="${convention.resiliation}">-</span></p>
+</div>
+
+<!-- Informations spécifiques au type ACCORD -->
+<div class="section" th:if="${convention.typeCode == 'ACCORD'}">
+  <h3>Informations - ACCORD</h3>
+  <p><span class="label">Périmètre :</span> <span th:text="${convention.perimetre}">-</span></p>
+  <p><span class="label">Modalités :</span> <span th:text="${convention.modalite}">-</span></p>
+</div>
+
+<!-- Champs personnalisés -->
+<div class="section" th:if="${convention.customFields != null and !convention.customFields.isEmpty()}">
+  <h3>Champs personnalisés</h3>
+  <div th:each="entry : ${convention.customFields}">
+    <p><span class="label" th:text="${entry.key} + ' :'">Nom du champ :</span> <span th:text="${entry.value}">Valeur</span></p>
+  </div>
+</div>
+
+</body>
+</html>
